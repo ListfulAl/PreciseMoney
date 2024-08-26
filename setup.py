@@ -7,7 +7,7 @@ long_description = (here / "README.md").read_text()
 
 setup(
     name="precise_money",
-    version="0.1.2",
+    version="0.1.3",
     packages=find_packages(exclude=["tests*"]),
     install_requires=[
         "pydantic-core>=2.23.0",
@@ -20,7 +20,7 @@ setup(
     description="A Python library for handling monetary values and currencies with maniacal attention to precision. PreciseMoney offers robust tools for financial calculations and currency management, ensuring accuracy in even the most complex monetary operations. Perfect for developers who lose sleep over floating-point errors.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ListfulAI/PreciseMoney",
+    url="https://github.com/ListfulAl/PreciseMoney",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.10",  # Add specific Python versions
