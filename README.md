@@ -88,19 +88,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Resources
 
-Currency Codes
+- [Currency Codes from OpenData @ Github](https://github.com/datasets/currency-codes)
 
-- https://github.com/datasets/currency-codes
+- [ISO Currency Standards](https://en.wikipedia.org/wiki/ISO_4217)
 
-Currency Standards
+- [Rounding](https://docs.python.org/3/library/decimal.html#rounding-modes)
 
-- https://en.wikipedia.org/wiki/ISO_4217
-
-Rounding strategies
-
-- https://docs.python.org/3/library/decimal.html#rounding-modes
-
-A Note on Currency Formatting
+### Currency Formatting
 
 Currencies around the world use different formatting conventions. For example, the currency symbol can appear before or after the amount, and the decimal separator can be a comma or a period.
 
@@ -145,7 +139,7 @@ Examples:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. My primary focus is on (Autaly)[https://autaly.co/] however I will review and merge PRs that are beneficial to the community.
+Contributions are welcome! Please feel free to submit a Pull Request. My primary focus is on [Autaly](https://autaly.co/) however I will review and merge PRs that are beneficial to the community.
 
 I'd like to keep the library as simple as possible and avoid adding too much complexity. But if you need to make an addition and includes a dependency, please include it in the `Pipfile` and `Pipfile.lock` so that it can be installed via `pip`. To update requirements.txt, run
 
