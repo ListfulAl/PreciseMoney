@@ -145,7 +145,7 @@ Examples:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. My primary focus is on Autaly however I will review and merge PRs that are beneficial to the community.
+Contributions are welcome! Please feel free to submit a Pull Request. My primary focus is on (Autaly)[https://autaly.co/] however I will review and merge PRs that are beneficial to the community.
 
 I'd like to keep the library as simple as possible and avoid adding too much complexity. But if you need to make an addition and includes a dependency, please include it in the `Pipfile` and `Pipfile.lock` so that it can be installed via `pip`. To update requirements.txt, run
 
