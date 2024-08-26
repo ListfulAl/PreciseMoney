@@ -29,7 +29,7 @@ pipenv install precise_money
 Here's a simple example of how to use the precise_money Library:
 
 ```python
-from percise_money.money import Money
+from precise_money.money import Money
 
 # Create money objects
 usd_50 = Money.from_currency("USD", "50.00")

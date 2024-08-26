@@ -3,9 +3,9 @@ import unittest
 from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_DOWN, ROUND_DOWN
 
 # Local application imports
-from percise_money.currency import get_decimal_places, get_currency_symbol
-from percise_money.error import MoneyError
-from percise_money.money import Money, quantize_decimal
+from precise_money.currency import get_decimal_places, get_currency_symbol
+from precise_money.error import MoneyError
+from precise_money.money import Money, quantize_decimal
 
 
 class TestCurrency(unittest.TestCase):

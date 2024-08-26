@@ -22,14 +22,14 @@ from typing import (
 from pydantic_core import core_schema
 
 # Local application imports
-from percise_money.currency import (
+from precise_money.currency import (
     CURRENCY_SYMBOLS,
     CURRENCY_DECIMAL_PLACES,
     DEFAULT_DISPLAY_DECIMAL_PLACES,
     DEFAULT_MAX_QUANTIZING_DECIMAL_PLACES,
     ABSOLUTE_MAX_DECIMAL_PLACES,
 )
-from percise_money.error import MoneyError
+from precise_money.error import MoneyError
 
 
 # Default decimal precision for all monetary value calculations
