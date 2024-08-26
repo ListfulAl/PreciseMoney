@@ -7,9 +7,11 @@ long_description = (here / "README.md").read_text()
 
 setup(
     name="precise_money",
-    version="0.1.1",
+    version="0.1.2",
     packages=find_packages(exclude=["tests*"]),
-    install_requires=[],
+    install_requires=[
+        "pydantic-core>=2.23.0",
+    ],
     extras_require={
         "dev": ["pytest", "twine", "pydantic"],
     },
