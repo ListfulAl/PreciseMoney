@@ -154,3 +154,10 @@ python setup.py sdist
 twine upload dist/*
 
 ```
+
+Be sure to add unit tests for your code.
+
+```bash
+pytest tests
+pytest tests/test_money.py::TestMoney::test_addition
+```

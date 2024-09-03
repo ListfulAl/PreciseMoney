@@ -6,6 +6,7 @@ from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_DOWN, ROUND_DOWN
 from precise_money.currency import get_decimal_places, get_currency_symbol
 from precise_money.error import MoneyError
 from precise_money.money import Money, quantize_decimal
+from typing import Union, Optional
 
 
 class TestCurrency(unittest.TestCase):
@@ -40,6 +41,35 @@ class TestMoney(unittest.TestCase):
     def test_creation(self):
         m = Money.from_currency("USD", "10.00")
         self.assertEqual(str(m), "10.00 USD")
+
+    def test_instance_creation_with_child_class(self):
+        class CustomMoney(Money):
+            def __init__(self, amount, currency="USD"):
+                super().__init__(amount, currency)
+
+            @classmethod
+            def from_currency(
+                cls,
+                currency_code: str,
+                amount: Union[str, Decimal, int],
+                normalize: bool = False,
+                quantize: Optional[bool] = None,
+                rounding: str = ROUND_HALF_DOWN,
+            ):
+                # a terrible function to test if this works
+                return cls(
+                    amount=Decimal("1.00"),
+                    currency=currency_code,
+                )
+
+        m = CustomMoney.from_currency("USD", "10.00")
+        self.assertEqual(str(m), "1.00 USD")
+        self.assertIsInstance(m, CustomMoney)
+        # testing addition should be new instance of CustomMoney
+        m2 = CustomMoney.from_currency("USD", "10.00")
+        m3 = m + m2
+        self.assertIsInstance(m3, CustomMoney)
+        self.assertEqual(str(m3), "1.00 USD")
 
     def test_creation_with_different_types(self):
         self.assertEqual(str(Money.from_currency("USD", 10)), "10.00 USD")

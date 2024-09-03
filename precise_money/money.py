@@ -210,7 +210,12 @@ class Money:
     systems, or any scenario requiring precise handling of monetary values.
     """
 
-    __slots__ = ("_value", "_currency_code", "decimal_places", "rounding")
+    __slots__ = (
+        "_value",
+        "_currency_code",
+        "decimal_places",
+        "rounding",
+    )
 
     def __init__(
         self,
@@ -262,9 +267,10 @@ class Money:
             )
         return upper_code
 
-    @staticmethod
+    @classmethod
     @decimal_context
     def from_currency(
+        cls,
         currency_code: str,
         amount: Union[str, Decimal, int],
         normalize: bool = False,
@@ -346,7 +352,7 @@ class Money:
                 error_key=MoneyError.MISSING_CURRENCY,
             )
 
-        return Money(
+        return cls(
             value=value,
             currency_code=currency_code,
             decimal_places=decimal_places,
@@ -526,10 +532,13 @@ class Money:
         assert isinstance(value, Any)
         return Money.from_currency(currency, value.to_decimal())
 
-    @staticmethod
+    @classmethod
     @decimal_context
     def from_iso_currency(
-        currency_code: str, amount: int, quantize: Optional[bool] = None
+        cls,
+        currency_code: str,
+        amount: int,
+        quantize: Optional[bool] = None,
     ) -> Money:
         """
         Create a Money object from an ISO 4217 currency code and an integer amount.
@@ -577,7 +586,7 @@ class Money:
             ValueError: If the currency_code is invalid or if the resulting value is invalid for the currency.
         """
         value = amount / ISO_CONVERSION_FACTOR
-        return Money.from_currency(currency_code, Decimal(value), quantize=quantize)
+        return cls.from_currency(currency_code, Decimal(value), quantize=quantize)
 
     def _is_same_currency(self, other: Money) -> None:
         if self._currency_code != other._currency_code:
@@ -686,9 +695,8 @@ class Money:
         res = cmp_func(self._value, other._value)
         return res
 
-    @staticmethod
     @decimal_context
-    def sum(moneys: Iterable[Money]) -> Money:
+    def sum(self, moneys: Iterable[Money]) -> Money:
         """
         Calculate the sum of an iterable of Money objects.
 
@@ -724,7 +732,9 @@ class Money:
               Money objects or when using libraries that expect a sum function.
             - It's more type-safe than the built-in sum() function when working with Money objects.
         """
-        return functools.reduce(lambda acc, money: acc + money, moneys, Money.zero())
+        return functools.reduce(
+            lambda acc, money: acc + money, moneys, self.__class__.zero()
+        )
 
     @property
     def is_neg(self) -> bool:
@@ -851,7 +861,9 @@ class Money:
         a = self.as_iso_int()
         b = other.as_iso_int()
         res = a + b
-        return Money.from_iso_currency(other._currency_code, res, quantize=True)
+        return self.__class__.from_iso_currency(
+            other._currency_code, res, quantize=True
+        )
 
     def __sub__(self, other: Money) -> Money:
         """
@@ -890,7 +902,9 @@ class Money:
         a = self.as_iso_int()
         b = other.as_iso_int()
         res = a - b
-        return Money.from_iso_currency(other._currency_code, res, quantize=True)
+        return self.__class__.from_iso_currency(
+            other._currency_code, res, quantize=True
+        )
 
     def __neg__(self) -> Money:
         """
@@ -915,7 +929,7 @@ class Money:
 
         This operation is useful for representing debits or when reversing transactions.
         """
-        return Money.from_currency(self._currency_code, -self._value, quantize=True)
+        return self.from_currency(self._currency_code, -self._value, quantize=True)
 
     @decimal_context
     def __mul__(self, other: Union[int, float, Decimal]) -> Money:
@@ -949,7 +963,7 @@ class Money:
         if not isinstance(other, Number):
             return NotImplemented
         mult = self._value * Decimal(other)
-        return Money.from_currency(self._currency_code, mult, quantize=True)
+        return self.__class__.from_currency(self._currency_code, mult, quantize=True)
 
     @decimal_context
     def __truediv__(self, other: Union[int, float, Decimal]) -> Money:
@@ -967,7 +981,7 @@ class Money:
         """
         if not isinstance(other, Number):
             return NotImplemented
-        return Money.from_currency(
+        return self.__class__.from_currency(
             self._currency_code, self._value / Decimal(other), quantize=True
         )
 
@@ -1018,8 +1032,9 @@ class Money:
         value = quantize_decimal(self._value, self.decimal_places)
         return int(value * ISO_CONVERSION_FACTOR)
 
-    @staticmethod
+    @classmethod
     def from_iso_currency_fields(
+        cls,
         currency_field: str,
         amount_field: str,
         custom_field: Optional[str] = None,
@@ -1042,7 +1057,7 @@ class Money:
         else:
 
             def _from_iso_currency(data: dict) -> Money:
-                return Money.from_iso_currency(data[currency_field], data[amount_field])
+                return cls.from_iso_currency(data[currency_field], data[amount_field])
 
             return _from_iso_currency
 
@@ -1089,7 +1104,7 @@ class Money:
         )
 
     @classmethod
-    def _validate(cls: Type[Money], value: Union[Money, dict], context: Any) -> Money:
+    def _validate(cls: Type[Any], value: Union[Money, dict], context: Any) -> Money:
         """
         Validator method for Pydantic, Odmantic model integration.
 
@@ -1114,15 +1129,15 @@ class Money:
         if isinstance(value, Money):
             return value
         elif isinstance(value, tuple):
-            return Money(amount=value[0], currency=value[1])
+            return cls(amount=value[0], currency=value[1])
         elif isinstance(value, dict):
-            return Money.deserialize(value)
-        else:
-            raise ValueError(f"Invalid value type: {type(value)}")
+            return cls.deserialize(value)
 
-    @staticmethod
+        raise ValueError(f"Invalid value type: {type(value)}")
+
+    @classmethod
     @decimal_context
-    def deserialize(data: Dict[str, Union[int, str]]) -> Money:
+    def deserialize(cls, data: Dict[str, Union[int, str]]) -> Money:
         """
         Convert a dictionary with money values to a properly formatted money object.
         """
@@ -1134,7 +1149,7 @@ class Money:
                 except Exception:
                     currency_field = f
 
-            return Money.from_dict(data, currency_field, amount_field)
+            return cls.from_dict(data, currency_field, amount_field)
         else:
             raise MoneyError(f"Unhandled data type: type - {type(data)} data -{data}")
 
